@@ -8,55 +8,33 @@ Person::Person(const char* surname, const char* name, const char* patronymic,
         surname(nullptr), name(nullptr), patronymic(nullptr),
         address(nullptr), sex('m'), education(0), birth_year(0)
 {
-    set_string_field(this->surname, surname);
-    set_string_field(this->name, name);
-    set_string_field(this->patronymic, patronymic);
-    set_string_field(this->address, address);
-    this->sex = sex;
-    this->education = education;
-    this->birth_year = birth_year;
+    set_fields(surname, name, patronymic,
+               address, sex, education, birth_year);
 }
 
 Person::Person(const Person& person) {
     if (this == &person) {
         return;
     }
-    set_string_field(this->surname, surname);
-    set_string_field(this->name, name);
-    set_string_field(this->patronymic, patronymic);
-    set_string_field(this->address, address);
-    sex = person.sex;
-    education = person.education;
-    birth_year = person.birth_year;
+    set_fields(person.surname, person.name, person.patronymic,
+               person.address, person.sex, person.education, person.birth_year);
 }
 
 Person::~Person() {
     delete[] surname;
-    surname = nullptr;
     delete[] name;
-    name = nullptr;
     delete[] patronymic;
-    patronymic = nullptr;
     delete[] address;
-    address = nullptr;
 }
 
-void Person::set_string_field(char*& field, const char* string) {
-    if (field == nullptr && string == nullptr)
-        return;
-    if (string == nullptr) {
-        std::cerr << "Empty string given." << std::endl;
-        return;
+Person& Person::operator=(const Person& rhs) {
+    if (this == &rhs) {
+        return *this;
     }
+    set_fields(rhs.surname, rhs.name, rhs.patronymic,
+               rhs.address, rhs.sex, rhs.education, rhs.birth_year);
 
-    if (field && !strcmp(field, string))
-        return;
-
-    auto temp_field = new char[strlen(string) + 1];
-
-    delete[] field;
-    memcpy(temp_field, string, strlen(string) + 1);
-    field = temp_field;
+    return *this;
 }
 
 void Person::set_surname(const char* surname) {
@@ -132,3 +110,33 @@ void Person::show_info() const {
               << "  Education: " << education << std::endl
               << "  Birth year: " << birth_year << std::endl;
 }
+
+void Person::set_fields(const char* surname, const char* name, const char* patronymic,
+                        const char* address, char sex, int education, int birth_year) {
+    set_string_field(this->surname, surname);
+    set_string_field(this->name, name);
+    set_string_field(this->patronymic, patronymic);
+    set_string_field(this->address, address);
+    this->sex = sex;
+    this->education = education;
+    this->birth_year = birth_year;
+}
+
+void Person::set_string_field(char*& field, const char* string) {
+    if (field == nullptr && string == nullptr)
+        return;
+    if (string == nullptr) {
+        std::cerr << "Empty string given." << std::endl;
+        return;
+    }
+
+    if (field && !strcmp(field, string))
+        return;
+
+    auto temp_field = new char[strlen(string) + 1];
+
+    delete[] field;
+    memcpy(temp_field, string, strlen(string) + 1);
+    field = temp_field;
+}
+

@@ -4,10 +4,11 @@
 class Person {
 public:
     explicit Person(const char* surname = nullptr, const char* name = nullptr, const char* patronymic = nullptr,
-                    const char* address = nullptr, char sex = 'm',
-                    int education = 0, int birth_year = 0);
+                    const char* address = nullptr, char sex = 'm', int education = 0, int birth_year = 0);
     Person(const Person& person);
     ~Person();
+
+    Person& operator=(const Person& rhs);
 
     void set_surname(const char* surname);
     const char* get_surname() const;
@@ -41,6 +42,8 @@ private:
     int education;
     int birth_year;
 
+    void set_fields(const char* surname, const char* name, const char* patronymic,
+                    const char* address, char sex, int education, int birth_year);
     void set_string_field(char*& field, const char* string);
 };
 

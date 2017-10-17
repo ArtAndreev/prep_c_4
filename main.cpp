@@ -7,11 +7,14 @@
 
 void set_persons(Person*& users, size_t& count);
 void input_personal_info(Person& person);
+bool input_string_field(char* destination, const char* message);
+bool input_int_field(int& destination, const char* message);
+void check_education_id(int& id);
 void show_persons_with_bigger_age(const Person* users, size_t count);
 void show_persons_with_higher_education(const Person* users, size_t count);
 void show_male_persons(const Person* users, size_t count);
 
-enum {
+enum EDUCATION {
     SECONDARY_EDUCATION = 0,
     SECONDARY_VOCATIONAL_EDUCATION,
     HIGHER_EDUCATION
@@ -44,41 +47,77 @@ void input_personal_info(Person& person) {
     char buffer[BUFFER_SIZE];
     int buffer_num = 0;
     getchar();
-    std::cout << "Enter information about the person line by line." << std::endl
-              << "Input surname:" << std::endl;
-    std::cin.getline(buffer, BUFFER_SIZE);
-    person.set_surname(buffer);
-    std::cout << "Input name:" << std::endl;
-    std::cin.getline(buffer, BUFFER_SIZE);
-    person.set_name(buffer);
-    std::cout << "Input patronymic:" << std::endl;
-    std::cin.getline(buffer, BUFFER_SIZE);
-    person.set_patronymic(buffer);
-    std::cout << "Input address:" << std::endl;
-    std::cin.getline(buffer, BUFFER_SIZE);
-    person.set_address(buffer);
-    std::cout << "Input sex ('f' or 'm'):" << std::endl;
-    std::cin >> buffer[0];
-    person.set_sex(buffer[0]);
-    std::cout << "Input education:" << std::endl
-              << "0 - SECONDARY EDUCATION;" << std::endl
-              << "1 - SECONDARY VOCATIONAL EDUCATION;" << std::endl
-              << "2 - HIGHER EDUCATION." << std::endl;
-    std::cin >> buffer_num;
-    person.set_education(buffer_num);
-    std::cout << "Input birth year:" << std::endl;
-    std::cin >> buffer_num;
-    person.set_birth_year(buffer_num);
+    std::cout << "Enter information about the person line by line." << std::endl;
+
+    bool input_result = true;
+
+    if ((input_result = input_string_field(buffer, "surname")))
+        person.set_surname(buffer);
+    if (input_result && (input_result = input_string_field(buffer, "name")))
+        person.set_name(buffer);
+    if (input_result && (input_result = input_string_field(buffer, "patronymic")))
+        person.set_patronymic(buffer);
+    if (input_result && (input_string_field(buffer, "address")))
+        person.set_address(buffer);
+    if (input_result && (input_string_field(buffer, "sex ('f' or 'm')")))
+        person.set_sex(buffer[0]);
+    if (input_result && (input_int_field(buffer_num, "education")))
+        person.set_education(buffer_num);
+    if (input_result && (input_int_field(buffer_num, "birth year")))
+        person.set_birth_year(buffer_num);
+}
+
+bool input_string_field(char* destination, const char* message) {
+    if (!destination || !message)
+        return false;
+
+    std::cout << "Input " << message << "." << std::endl;
+    std::cout << "Max length: " << BUFFER_SIZE << std::endl;
+    if (std::cin.getline(destination, BUFFER_SIZE))
+        return true;
+
+    return false;
+}
+
+bool input_int_field(int& destination, const char* message) {
+    if (!message)
+        return false;
+
+    std::cout << "Input " << message << "." << std::endl;
+    if (message == "education") {
+        std::cout << SECONDARY_EDUCATION
+                  << " - SECONDARY EDUCATION ID;" << std::endl
+                  << SECONDARY_VOCATIONAL_EDUCATION
+                  << " - SECONDARY VOCATIONAL EDUCATION ID;" << std::endl
+                  << HIGHER_EDUCATION
+                  << " - HIGHER EDUCATION ID." << std::endl;
+        std::cin >> destination;
+        check_education_id(destination);
+        return true;
+    }
+
+    std::cin >> destination;
+    return true;
+}
+
+void check_education_id(int& id) {
+    while (id != SECONDARY_EDUCATION && id != SECONDARY_VOCATIONAL_EDUCATION
+           && id != HIGHER_EDUCATION) {
+        std::cout << "Incorrect education ID inputted. Try again." << std::endl;
+        std::cin >> id;
+    }
 }
 
 void show_persons_with_bigger_age(const Person* users, size_t count) {
     int age = 0;
-    std::cout << "Input age for searching:" << std::endl;
-    std::cin >> age;
-    if (age < 0) {
-        std::cerr << "Age must be 0 or bigger." << std::endl;
-        return;
+    do {
+        std::cout << "Input age for searching:" << std::endl;
+        std::cin >> age;
+        if (age < 0) {
+            std::cerr << "Age must be 0 or bigger." << std::endl;
+        }
     }
+    while (age < 0);
     std::cout << "Persons with age bigger than " << age << ":" << std::endl;
     for (size_t i = 0; i < count; i++) {
         if ((CURRENT_YEAR - users[i].get_birth_year()) > age) {
@@ -97,7 +136,7 @@ void show_persons_with_higher_education(const Person* users, size_t count) {
 }
 
 void show_male_persons(const Person* users, size_t count) {
-    std::cout << "Male persons" << std::endl;
+    std::cout << "Male persons:" << std::endl;
     for (size_t i = 0; i < count; i++) {
         if (users[i].get_sex() == 'm') {
             users[i].show_info();
