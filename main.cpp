@@ -10,6 +10,7 @@ void input_personal_info(Person& person);
 bool input_string_field(char* destination, const char* message);
 bool input_int_field(int& destination, const char* message);
 void check_education_id(int& id);
+void check_sex(char* sex);
 void show_persons_with_bigger_age(const Person* users, size_t count);
 void show_persons_with_higher_education(const Person* users, size_t count);
 void show_male_persons(const Person* users, size_t count);
@@ -73,9 +74,11 @@ bool input_string_field(char* destination, const char* message) {
 
     std::cout << "Input " << message << "." << std::endl;
     std::cout << "Max length: " << BUFFER_SIZE << std::endl;
-    if (std::cin.getline(destination, BUFFER_SIZE))
+    if (std::cin.getline(destination, BUFFER_SIZE)) {
+        if (message == "sex ('f' or 'm')")
+            check_sex(destination);
         return true;
-
+    }
     return false;
 }
 
@@ -105,6 +108,14 @@ void check_education_id(int& id) {
            && id != HIGHER_EDUCATION) {
         std::cout << "Incorrect education ID inputted. Try again." << std::endl;
         std::cin >> id;
+    }
+}
+
+
+void check_sex(char* sex) {
+    while (sex[0] != 'f' && sex[0] != 'm') {
+        std::cout << "Incorrect sex inputted. Try again." << std::endl;
+        std::cin.getline(sex, BUFFER_SIZE);
     }
 }
 
