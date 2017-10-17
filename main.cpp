@@ -110,6 +110,7 @@ void check_education_id(int& id) {
 
 void show_persons_with_bigger_age(const Person* users, size_t count) {
     int age = 0;
+    bool found = false;
     do {
         std::cout << "Input age for searching:" << std::endl;
         std::cin >> age;
@@ -122,24 +123,35 @@ void show_persons_with_bigger_age(const Person* users, size_t count) {
     for (size_t i = 0; i < count; i++) {
         if ((CURRENT_YEAR - users[i].get_birth_year()) > age) {
             users[i].show_info();
+            found = true;
         }
     }
+    if (!found)
+        std::cout << "No persons found with age bigger than " << age << "." << std::endl;
 }
 
 void show_persons_with_higher_education(const Person* users, size_t count) {
+    bool found = false;
     std::cout << "Persons with higher education:" << std::endl;
     for (size_t i = 0; i < count; i++) {
         if (users[i].get_education() == HIGHER_EDUCATION) {
             users[i].show_info();
+            found = true;
         }
     }
+    if (!found)
+        std::cout << "No persons found with higher education." << std::endl;
 }
 
 void show_male_persons(const Person* users, size_t count) {
+    bool found = false;
     std::cout << "Male persons:" << std::endl;
     for (size_t i = 0; i < count; i++) {
         if (users[i].get_sex() == 'm') {
             users[i].show_info();
+            found = true;
         }
     }
+    if (!found)
+        std::cout << "No male persons found." << std::endl;
 }
