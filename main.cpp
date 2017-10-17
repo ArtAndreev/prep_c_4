@@ -9,8 +9,9 @@ void set_persons(Person*& users, size_t& count);
 void input_personal_info(Person& person);
 bool input_string_field(char* destination, const char* message);
 bool input_int_field(int& destination, const char* message);
-void check_education_id(int& id);
 void check_sex(char* sex);
+void check_education_id(int& id);
+void check_birth_year(int& birth_year);
 void show_persons_with_bigger_age(const Person* users, size_t count);
 void show_persons_with_higher_education(const Person* users, size_t count);
 void show_male_persons(const Person* users, size_t count);
@@ -98,9 +99,17 @@ bool input_int_field(int& destination, const char* message) {
         check_education_id(destination);
         return true;
     }
-
     std::cin >> destination;
+    if (message == "birth year")
+        check_birth_year(destination);
     return true;
+}
+
+void check_sex(char* sex) {
+    while (sex[0] != 'f' && sex[0] != 'm') {
+        std::cout << "Incorrect sex inputted. Try again." << std::endl;
+        std::cin.getline(sex, BUFFER_SIZE);
+    }
 }
 
 void check_education_id(int& id) {
@@ -111,11 +120,10 @@ void check_education_id(int& id) {
     }
 }
 
-
-void check_sex(char* sex) {
-    while (sex[0] != 'f' && sex[0] != 'm') {
-        std::cout << "Incorrect sex inputted. Try again." << std::endl;
-        std::cin.getline(sex, BUFFER_SIZE);
+void check_birth_year(int& birth_year) {
+    while (birth_year > CURRENT_YEAR) {
+        std::cout << "Incorrect birth year inputted. Try again." << std::endl;
+        std::cin >> birth_year;
     }
 }
 
